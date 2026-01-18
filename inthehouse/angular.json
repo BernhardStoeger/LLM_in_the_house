@@ -47,9 +47,11 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "ssr": false
             },
             "development": {
+              "ssr": false,
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
@@ -59,6 +61,9 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
               "buildTarget": "inthehouse:build:production"
