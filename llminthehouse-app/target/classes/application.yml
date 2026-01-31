@@ -1,0 +1,34 @@
+server:
+  port: 8100
+  address: 0.0.0.0
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+pictures:
+  basepath: pictures
+
+spring:
+  application:
+    name: llminthehouse
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: POSTGRESQL
+    show-sql: false
+    properties:
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.cache.use_minimal_puts: true
+      hibernate.id.new_generator_mappings: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/llminthehouse
+    username: llminthehouse
+    password: llminthehouse
+
+

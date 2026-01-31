@@ -1,5 +1,8 @@
 /.idea/
-/inthehouse/.angular/
-/inthehouse/node_modules/
+/llminthehouse-frontend/.angular/
+/llminthehouse-frontend/node_modules/
 /inthehouse/.vscode/
 /inthehouse/.github/
+/llminthehouse-*/target/
+/llminthehouse-frontend/node/
+/llminthehouse-frontend/src/app/api/

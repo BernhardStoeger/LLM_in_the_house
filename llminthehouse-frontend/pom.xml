@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>scead</groupId>
+        <artifactId>llminthehouse-parent</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <artifactId>llminthehouse-frontend</artifactId>
+
+  <properties>
+    <frontend-maven-plugin.version>1.13.4</frontend-maven-plugin.version>
+    <frontend-maven-plugin.node.version>v22.16.0</frontend-maven-plugin.node.version>
+    <frontend-maven-plugin.npm.version>10.8.1</frontend-maven-plugin.npm.version>
+    <codegen.source.folder>${project.basedir}/src/main/resources/code-gen</codegen.source.folder>
+    <codegen.yaml.output>${project.build.directory}/generated-resources/swagger</codegen.yaml.output>
+    <codegen.ts.output>${project.basedir}/src/api</codegen.ts.output>
+    <codegen.ts.output.folder>${project.basedir}/src/app/api</codegen.ts.output.folder>
+  </properties>
+
+  <build>
+    <plugins>
+      <!-- Clean *-api folders on mvn clean -->
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Clean Generated TS Clients</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <filesets>
+                <fileset>
+                  <directory>${codegen.ts.output.folder}</directory>
+                  <includes>
+                    <include>*-api/**</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Copy OpenApi Specification from BE</id>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>scead</groupId>
+                  <artifactId>llminthehouse-backend</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <includes>openapi/llminthehouse-api.yaml</includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- FE client from API specification -->
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>Generate TypeScript API for BE</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <inputSpec>${project.build.directory}/openapi/llminthehouse-api.yaml</inputSpec>
+              <output>${codegen.ts.output.folder}/backend-api</output>
+              <generatorName>typescript-angular</generatorName>
+              <configOptions>
+                <enumPropertyNaming>original</enumPropertyNaming>
+                <dateLibrary>custom</dateLibrary>
+              </configOptions>
+              <typeMappings>
+                <typeMapping>date=Date</typeMapping>
+                <typeMapping>DateTime=Date</typeMapping>
+              </typeMappings>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Setup node + npm, npm install, ng build -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>setup node + npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <nodeVersion>${frontend-maven-plugin.node.version}</nodeVersion>
+              <npmVersion>${frontend-maven-plugin.npm.version}</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ng build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

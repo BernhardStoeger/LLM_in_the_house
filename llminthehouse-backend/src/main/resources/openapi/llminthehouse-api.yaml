@@ -1,0 +1,185 @@
+openapi: 3.0.2
+info:
+  title: llminthehouse API
+  description: Routes for managing systems, roles, rights, and user roles
+  version: '1.0.0-ALPHA'
+
+servers:
+  - url: http://{host}:{port}/{contextPath}
+    description: Internal dev server for testing
+    variables:
+      host:
+        default: localhost
+      port:
+        default: "8100"
+      contextPath:
+        default:
+
+security:
+  - bearerAuth: [ ]
+
+paths:
+
+  /auth/login:
+    post:
+      summary: User login
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
+  /chat/message:
+    post:
+      summary: Send a chat message
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageRequest'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
+  /chat/messages:
+    get:
+      summary: Get chat messages
+      tags:
+        - Chat
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+          description: Max number of messages to return
+      responses:
+        '200':
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
+
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required:
+        - token
+        - user
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+
+    MessageRequest:
+      type: object
+      required:
+        - content
+      properties:
+        content:
+          type: string
+
+    MessageResponse:
+      type: object
+      required:
+        - id
+        - user
+        - content
+        - timestamp
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+    GeneralErrorWebDTO:
+      type: object
+      required:
+        - message
+      properties:
+        type:
+          type: string
+          description: "Type of the error (usually the class name of the exception)"
+        message:
+          type: string
+          description: "Error message"

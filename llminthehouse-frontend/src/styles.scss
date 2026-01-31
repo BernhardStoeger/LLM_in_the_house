@@ -1,0 +1,150 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+llminthehouse-navbar {
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  .mat-toolbar {
+    background: #333333;
+    color: #FFF;
+  }
+  img {
+    height: inherit;
+  }
+  a {
+    color: #FFF;
+    text-decoration: none;
+  }
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.headButton {
+  margin: 1vh 1vw;
+}
+
+.encounter-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+  gap: 16px;
+}
+
+.monster-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+.monster-table th, .monster-table td {
+  border: 1px solid #e0e0e0;
+  padding: 8px 12px;
+  text-align: left;
+}
+.monster-table th {
+  background: #f5f5f5;
+}
+.monster-table input[type="number"] {
+  width: 60px;
+}
+
+.fight-tracker-table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+.fight-tracker-img-cell {
+  height: 180px;
+  border: 1px solid #222222;
+  width: 12vw;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.fight-minis-img-cell {
+  border: 1px solid #222222;
+  height: 170px;
+  width: 6.7vw;
+  vertical-align: top;
+  text-align: center;
+  align-content: end;
+}
+
+.fight-minis-img-cell-2 {
+  border: 1px solid #222222;
+  height: 170px;
+  width: 6.7vw;
+  vertical-align: top;
+  text-align: center;
+}
+
+.fight-tracker-img {
+  width: 95%;
+  max-height: 170px;
+  object-fit: contain;
+  transform: rotate(180deg);
+}
+
+.fight-minis-img {
+  width: 95%;
+  max-height: 130px;
+  object-fit: contain;
+  transform: rotate(180deg);
+}
+
+.fight-minis-img-normal {
+  margin-top: 4px;
+  width: 95%;
+  max-height: 130px;
+  object-fit: contain;
+}
+
+.fight-tracker-info-cell {
+  border: 1px solid #222222;
+  height: 100px;
+  vertical-align: top;
+  text-align: left;
+  font-size: 1.1em;
+  padding: 4px;
+}
+
+.mini-spacer {
+  margin: 5px;
+}
+
+.fight-tracker-img-number {
+  z-index: 10;
+  position: absolute;
+  margin-left: 3px;
+  font-size: larger;
+  transform: rotate(180deg);
+  color: #fff;
+  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
+
+.fight-tracker-img-normal-number {
+  z-index: 10;
+  position: absolute;
+  margin-left: 4.4vw;
+  margin-top: 11.8vw;
+  font-size: larger;
+  color: #fff;
+  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+}
+
+@media print {
+  llminthehouse-navbar {
+    display: none;
+  }
+  .fight-tracker-table {
+    max-width: 99vw;
+  }
+  .page {
+    page-break-after: always;
+  }
+}
