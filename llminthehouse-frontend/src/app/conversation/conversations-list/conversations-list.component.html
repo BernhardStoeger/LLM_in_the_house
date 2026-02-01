@@ -16,4 +16,5 @@
     <tr mat-header-row *matHeaderRowDef="['title', 'createdAt', 'participants']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['title', 'createdAt', 'participants'];" (click)="onSelect(row)" style="cursor:pointer"></tr>
   </table>
+  <mat-paginator [length]="conversations.length" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>

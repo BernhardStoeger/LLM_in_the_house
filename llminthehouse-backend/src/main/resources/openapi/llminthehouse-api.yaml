@@ -127,7 +127,7 @@ paths:
                 $ref: '#/components/schemas/GeneralErrorWebDTO'
 
   /conversations/user/{useruuid}:
-    post:
+    get:
       operationId: getConversationsForUser
       summary: Get Conversation for given user
       tags:

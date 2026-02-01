@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Registration succesfull please login!</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Name</mat-label>
+    <input matInput [formControl]="name">
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" (click)="ok()">OK</button>
+</mat-dialog-content>
