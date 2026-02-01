@@ -26,7 +26,7 @@ public class ConversationService
 
     public List<Conversation> getConversationsForUser(User user)
     {
-        return conversationRepository.findByParticipantsContaining(user);
+        return conversationRepository.findAllByUser(user);
     }
 
     public Message addMessage(UUID conversationUUID, String content, boolean llm)
