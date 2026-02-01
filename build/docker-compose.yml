@@ -1,0 +1,19 @@
+name: llminthehouse
+
+services:
+  database:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_DB=llminthehouse
+      - POSTGRES_USER=llminthehouse
+      - POSTGRES_PASSWORD=llminthehouse
+    ports:
+      - 5432:5432
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - llminthehouse
+
+networks:
+  llminthehouse:
+    driver: bridge

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/file")
@@ -22,7 +22,7 @@ public class ResourceLoadWebController {
 
     @GetMapping("/load")
     public ResponseEntity<Resource> loadFile(@RequestParam("path") String path) {
-        File file = Paths.get(basepath + "/" + path).toAbsolutePath().normalize().toFile();
+        File file = Path.of(basepath + "/" + path).toAbsolutePath().normalize().toFile();
         if (!file.exists() || !file.isFile()) {
             return ResponseEntity.notFound().build();
         }

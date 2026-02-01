@@ -8,6 +8,7 @@ import org.hibernate.Hibernate;
 import scead.llminthehouse.base.common.utils.DateUtils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public abstract class AggregateRootEntity extends BaseEntity
     private UUID uuid = UUID.randomUUID();
 
     @NotNull
-    private LocalDate createdOn = DateUtils.today();
+    private LocalDateTime createdOn = DateUtils.now();
 
     protected AggregateRootEntity()
     {

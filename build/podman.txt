@@ -1,0 +1,6 @@
+## Compoose
+podman compose up
+
+## Wenn container mal wieder nicht richtig gefunden werden
+podman machine stop podman-machine-default
+podman machine start podman-machine-new

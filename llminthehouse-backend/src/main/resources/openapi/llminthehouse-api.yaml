@@ -20,8 +20,35 @@ security:
 
 paths:
 
+  /auth/register:
+    post:
+      operationId: register
+      summary: Register new user
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequestWebDTO'
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWebDTO'
+        '400':
+          description: Registration failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
   /auth/login:
     post:
+      operationId: login
       summary: User login
       tags:
         - Auth
@@ -30,14 +57,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: '#/components/schemas/LoginRequestWebDTO'
       responses:
         '200':
-          description: Successful login
+          description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthResponse'
+                $ref: '#/components/schemas/UserWebDTO'
         '401':
           description: Invalid credentials
           content:
@@ -45,58 +72,119 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralErrorWebDTO'
 
-  /chat/message:
+  /conversations:
     post:
-      summary: Send a chat message
+      operationId: createConversation
+      summary: Create Conversation
       tags:
-        - Chat
-      security:
-        - bearerAuth: []
+        - Conversation
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MessageRequest'
+              $ref: '#/components/schemas/ConversationWebDTO'
       responses:
-        '201':
-          description: Message sent
+        '200':
+          description: Successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                $ref: '#/components/schemas/ConversationWebDTO'
         '401':
-          description: Unauthorized
+          description: Invalid request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralErrorWebDTO'
 
-  /chat/messages:
-    get:
-      summary: Get chat messages
+  /conversations/{uuid}:
+    post:
+      operationId: getConversation
+      summary: Get Conversation
       tags:
-        - Chat
-      security:
-        - bearerAuth: []
+        - Conversation
       parameters:
-        - in: query
-          name: limit
+        - in: path
+          name: uuid
           schema:
-            type: integer
-            default: 50
-          description: Max number of messages to return
+            type: string
+            format: uuid
+          required: true
+          description: "uuid"
       responses:
         '200':
-          description: List of messages
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationWebDTO'
+        '401':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
+  /conversations/user/{useruuid}:
+    post:
+      operationId: getConversationsForUser
+      summary: Get Conversation for given user
+      tags:
+        - Conversation
+      parameters:
+        - in: path
+          name: useruuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: "uuid"
+      responses:
+        '200':
+          description: Successful
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MessageResponse'
+                  $ref: '#/components/schemas/ConversationListWebDTO'
         '401':
-          description: Unauthorized
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralErrorWebDTO'
+
+  /conversation/{uuid}/message:
+    post:
+      operationId: addMessage
+      summary: Add Message
+      tags:
+        - Conversation
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: "uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageWebDTO'
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageWebDTO'
+        '401':
+          description: Invalid request
           content:
             application/json:
               schema:
@@ -113,18 +201,27 @@ components:
 
   schemas:
 
-    User:
+    UserWebDTO:
       type: object
+      required:
+        - id
+        - uuid
+        - username
+        - createdAt
       properties:
         id:
           type: integer
+          format: int64
+        uuid:
+          type: string
+          format: uuid
         username:
           type: string
         createdAt:
           type: string
           format: date-time
 
-    LoginRequest:
+    LoginRequestWebDTO:
       type: object
       required:
         - username
@@ -135,42 +232,87 @@ components:
         password:
           type: string
 
-    AuthResponse:
+
+    RegisterRequestWebDTO:
       type: object
       required:
-        - token
-        - user
+        - username
+        - password
       properties:
-        token:
+        username:
           type: string
-        user:
-          $ref: '#/components/schemas/User'
-
-    MessageRequest:
-      type: object
-      required:
-        - content
-      properties:
-        content:
+        password:
           type: string
 
-    MessageResponse:
+    MessageWebDTO:
       type: object
       required:
         - id
-        - user
         - content
         - timestamp
+        - number
+        - llm
       properties:
         id:
           type: integer
-        user:
-          $ref: '#/components/schemas/User'
+          format: int64
         content:
           type: string
         timestamp:
           type: string
           format: date-time
+        number:
+          type: integer
+        llm:
+          type: boolean
+
+    ConversationListWebDTO:
+      type: object
+      required:
+        - id
+        - uuid
+        - title
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+          format: uuid
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    ConversationWebDTO:
+      type: object
+      required:
+        - id
+        - uuid
+        - title
+        - createdAt
+        - user
+        - messages
+      properties:
+        id:
+          type: integer
+          format: int64
+        uuid:
+          type: string
+          format: uuid
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        user:
+          $ref: '#/components/schemas/UserWebDTO'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageWebDTO'
 
     GeneralErrorWebDTO:
       type: object

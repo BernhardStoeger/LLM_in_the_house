@@ -1,0 +1,21 @@
+<form (ngSubmit)="register()" class="login-form" autocomplete="off">
+  <h2>Register</h2>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Username</mat-label>
+    <input matInput [formControl]="username">
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Password</mat-label>
+    <input matInput [formControl]="password" type="password">
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Password confirmation</mat-label>
+    <input matInput [formControl]="passwordConfirm" type="password">
+  </mat-form-field>
+  @if (error) {
+    <div class="error">
+      <mat-error>{{ error }}</mat-error>
+    </div>
+  }
+  <button mat-raised-button color="primary" type="submit">Register</button>
+</form>

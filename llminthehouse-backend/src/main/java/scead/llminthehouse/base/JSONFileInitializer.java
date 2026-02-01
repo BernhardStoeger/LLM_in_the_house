@@ -1,20 +1,14 @@
 package scead.llminthehouse.base;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -76,7 +70,7 @@ public abstract class JSONFileInitializer<T> extends BaseInitializer
 
                 return objectMapper.readValue(inputStream, parametricListType);
             }
-            catch (IOException e)
+            catch (JacksonException e)
             {
                 log.error("could not parse {}, error: {}", getRelativePath(), e.getMessage());
             }
@@ -103,7 +97,7 @@ public abstract class JSONFileInitializer<T> extends BaseInitializer
 
             return objectMapper.readValue(inputStream, parametricListType);
         }
-        catch (IOException e)
+        catch (JacksonException e)
         {
             log.error("could not parse {}, error: {}", getRelativePath(), e.getMessage());
         }
@@ -117,11 +111,5 @@ public abstract class JSONFileInitializer<T> extends BaseInitializer
 
     protected void configureDeserializer(ObjectMapper objectMapper)
     {
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        JavaTimeModule timeModule = new JavaTimeModule();
-        timeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
-        timeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_DATE));
-        objectMapper.registerModule(timeModule);
     }
 }
