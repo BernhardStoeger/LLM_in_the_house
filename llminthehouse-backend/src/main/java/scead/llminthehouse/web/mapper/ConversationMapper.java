@@ -20,15 +20,24 @@ public class ConversationMapper
 
     public static ConversationListWebDTO mapConversationList(Conversation conversation)
     {
-        return new ConversationListWebDTO(
-                conversation.getId(), conversation.getUuid(), conversation.getTitle(), conversation.getCreatedOn());
+        ConversationListWebDTO conversationListDTO = new ConversationListWebDTO();
+        conversationListDTO.setId(conversation.getId());
+        conversationListDTO.setUuid(conversation.getUuid());
+        conversationListDTO.setTitle(conversation.getTitle());
+        conversationListDTO.setCreatedAt(conversation.getCreatedOn());
+        return conversationListDTO;
     }
 
     public static ConversationWebDTO mapConversation(Conversation conversation)
     {
-        return new ConversationWebDTO(
-                conversation.getId(), conversation.getUuid(), conversation.getTitle(), conversation.getCreatedOn(),
-                UserMapper.mapUser(conversation.getUser()), ConversationMapper.mapMessages(conversation.getMessages()));
+        ConversationWebDTO conversationDTO = new ConversationWebDTO();
+        conversationDTO.setId(conversation.getId());
+        conversationDTO.setUuid(conversation.getUuid());
+        conversationDTO.setTitle(conversation.getTitle());
+        conversationDTO.setCreatedAt(conversation.getCreatedOn());
+        conversationDTO.setUser(UserMapper.mapUser(conversation.getUser()));
+        conversationDTO.setMessages(mapMessages(conversation.getMessages()));
+        return conversationDTO;
     }
 
     public static List<MessageWebDTO> mapMessages(Collection<Message> messages)
@@ -40,7 +49,12 @@ public class ConversationMapper
 
     public static MessageWebDTO mapMessage(Message message)
     {
-        return new MessageWebDTO(
-                message.getId(), message.getContent(), message.getTimestamp(), message.getNumber(), message.isLlm());
+        MessageWebDTO messageDTO = new MessageWebDTO();
+        messageDTO.setId(message.getId());
+        messageDTO.setContent(message.getContent());
+        messageDTO.setTimestamp(message.getTimestamp());
+        messageDTO.setNumber(message.getNumber());
+        messageDTO.setLlm(message.isLlm());
+        return messageDTO;
     }
 }

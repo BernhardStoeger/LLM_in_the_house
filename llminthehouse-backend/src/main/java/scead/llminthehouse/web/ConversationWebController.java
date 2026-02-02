@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import scead.llminthehouse.base.channel.web.ConversationApi;
 import scead.llminthehouse.base.channel.web.dto.ConversationListWebDTO;
 import scead.llminthehouse.base.channel.web.dto.ConversationWebDTO;
+import scead.llminthehouse.base.channel.web.dto.CreateConversationWebDTO;
 import scead.llminthehouse.base.channel.web.dto.MessageWebDTO;
 import scead.llminthehouse.domain.businessobject.Conversation;
 import scead.llminthehouse.domain.businessobject.Message;
@@ -14,6 +15,7 @@ import scead.llminthehouse.domain.service.ConversationService;
 import scead.llminthehouse.domain.service.UserService;
 import scead.llminthehouse.web.mapper.ConversationMapper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,10 +33,10 @@ public class ConversationWebController implements ConversationApi {
     }
 
     @PostMapping
-    public ResponseEntity<ConversationWebDTO> createConversation(@RequestBody ConversationWebDTO conversationWebDTO)
+    public ResponseEntity<ConversationWebDTO> createConversation(@RequestBody CreateConversationWebDTO conversationWebDTO)
     {
         Conversation conversation = conversationService.createConversation(
-                conversationWebDTO.getTitle(), userService.getUser(conversationWebDTO.getUser().getUuid()));
+                conversationWebDTO.getTitle(), userService.getUser(conversationWebDTO.getUseruuid()));
         return ResponseEntity.ok(ConversationMapper.mapConversation(conversation));
     }
 
@@ -52,9 +54,10 @@ public class ConversationWebController implements ConversationApi {
     }
 
     @PostMapping("/{uuid}/message")
-    public ResponseEntity<MessageWebDTO> addMessage(@PathVariable UUID uuid, @RequestBody MessageWebDTO messageWebDTO)
+    public ResponseEntity<List<MessageWebDTO>> addMessage(@PathVariable UUID uuid, @RequestBody MessageWebDTO messageWebDTO)
     {
         Message message = conversationService.addMessage(uuid, messageWebDTO.getContent(), false);
-        return ResponseEntity.ok(ConversationMapper.mapMessage(message));
+        Message llmResponse = null;
+        return ResponseEntity.ok(Arrays.asList(ConversationMapper.mapMessage(message), ConversationMapper.mapMessage(llmResponse)));
     }
 }

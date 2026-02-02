@@ -40,3 +40,24 @@ form {
   color: red;
 }
 
+.chat {
+  width: 80vw;
+  margin: 3vh auto;
+  height: 85vh;
+}
+
+.spinner {
+  position: absolute !important;
+  top: 48vh;
+  left: 48vw;
+  z-index: 1000;
+}
+
+.message-input {
+  width: 70%;
+}
+
+.card-content {
+  max-height: 80%;
+  overflow-y: scroll;
+}

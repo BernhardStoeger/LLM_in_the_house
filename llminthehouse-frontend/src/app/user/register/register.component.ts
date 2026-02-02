@@ -21,7 +21,7 @@ import {Router} from '@angular/router';
   templateUrl: './register.component.html'
 })
 export class RegisterComponent {
-  readonly dialog = inject(MatDialog);
+  dialog = inject(MatDialog);
   router: Router = inject(Router);
 
   username = new FormControl('', [Validators.required]);

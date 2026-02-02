@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -6,13 +6,16 @@ import {
   MatHeaderCellDef,
   MatHeaderRow, MatHeaderRowDef,
   MatRow, MatRowDef,
-  MatTable
+  MatTable, MatTableDataSource
 } from '@angular/material/table';
 import {DatePipe} from '@angular/common';
 import {ConversationListWebDTO, ConversationService, ConversationWebDTO} from '../../api/backend-api';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {UserService} from '../../user/user-service';
+import {MatDialog} from '@angular/material/dialog';
+import {MatButton} from '@angular/material/button';
+import {ConversationDialog} from '../conversation-dialog/conversation-dialog';
 
 @Component({
   selector: 'app-conversations-list',
@@ -29,18 +32,20 @@ import {UserService} from '../../user/user-service';
     MatHeaderRowDef,
     MatRowDef,
     DatePipe,
-    MatPaginator
+    MatPaginator,
+    MatButton
   ]
 })
-export class ConversationsListComponent implements AfterViewInit {
+export class ConversationsListComponent implements OnInit {
 
+  dialog = inject(MatDialog);
   router: Router = inject(Router);
   userService: UserService = inject(UserService);
   conversationService: ConversationService = inject(ConversationService);
 
-  conversations: ConversationListWebDTO[] = [];
+  dataSource: MatTableDataSource<ConversationListWebDTO> = new MatTableDataSource();
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.loadConversations();
   }
 
@@ -50,10 +55,21 @@ export class ConversationsListComponent implements AfterViewInit {
       return;
     }
     this.conversationService.getConversationsForUser(userUUID).subscribe(res =>
-      this.conversations = res)
+      this.dataSource.data = res
+    );
   }
 
   onSelect(conversation: ConversationWebDTO) {
     this.router.navigate(['/conversation', conversation.uuid])
+  }
+
+  openCreateDialog(): void {
+    const dialogRef = this.dialog.open(ConversationDialog, {});
+
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.onSelect(res);
+      }
+    });
   }
 }

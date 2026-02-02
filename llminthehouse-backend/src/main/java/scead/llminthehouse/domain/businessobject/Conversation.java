@@ -32,7 +32,7 @@ public class Conversation extends AggregateRootEntity
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "conversation_id")
     @OrderBy("number")
     private List<Message> messages = new ArrayList<>();

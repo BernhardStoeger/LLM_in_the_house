@@ -27,6 +27,10 @@ export class UserService {
     localStorage.setItem(this.localStorageKey, JSON.stringify(user));
   }
 
+  getUserUUID(): string {
+    return (this.user?.uuid ?? '');
+  }
+
   logout(): void {
     this.user = undefined;
     localStorage.setItem(this.localStorageKey, '');

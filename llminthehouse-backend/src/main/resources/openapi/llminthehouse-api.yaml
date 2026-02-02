@@ -83,7 +83,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConversationWebDTO'
+              $ref: '#/components/schemas/CreateConversationWebDTO'
       responses:
         '200':
           description: Successful
@@ -99,7 +99,7 @@ paths:
                 $ref: '#/components/schemas/GeneralErrorWebDTO'
 
   /conversations/{uuid}:
-    post:
+    get:
       operationId: getConversation
       summary: Get Conversation
       tags:
@@ -156,7 +156,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GeneralErrorWebDTO'
 
-  /conversation/{uuid}/message:
+  /conversations/{uuid}/message:
     post:
       operationId: addMessage
       summary: Add Message
@@ -182,7 +182,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageWebDTO'
+                type: array
+                items:
+                  $ref: '#/components/schemas/MessageWebDTO'
         '401':
           description: Invalid request
           content:
@@ -246,12 +248,6 @@ components:
 
     MessageWebDTO:
       type: object
-      required:
-        - id
-        - content
-        - timestamp
-        - number
-        - llm
       properties:
         id:
           type: integer
@@ -268,11 +264,6 @@ components:
 
     ConversationListWebDTO:
       type: object
-      required:
-        - id
-        - uuid
-        - title
-        - createdAt
       properties:
         id:
           type: integer
@@ -286,15 +277,20 @@ components:
           type: string
           format: date-time
 
-    ConversationWebDTO:
+    CreateConversationWebDTO:
       type: object
       required:
-        - id
-        - uuid
         - title
-        - createdAt
-        - user
-        - messages
+        - useruuid
+      properties:
+        useruuid:
+          type: string
+          format: uuid
+        title:
+          type: string
+
+    ConversationWebDTO:
+      type: object
       properties:
         id:
           type: integer

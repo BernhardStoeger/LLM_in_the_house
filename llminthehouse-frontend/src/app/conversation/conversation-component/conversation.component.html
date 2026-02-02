@@ -1,1 +1,23 @@
-<p>conversation.component works!</p>
+<mat-card class="chat" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ conversation().title }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="card-content">
+    @for (msg of conversation().messages; track msg.id) {
+      <p>{{msg.content}}</p>
+      <p>{{msg.timestamp | date:'short'}}</p>
+    }
+  </mat-card-content>
+  <mat-card-footer>
+    <mat-form-field class="message-input">
+      <mat-label>Send message</mat-label>
+      <textarea  matInput type="text" [formControl]="message"></textarea>
+      <button matSuffix matIconButton (click)="sendMessage()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+  </mat-card-footer>
+</mat-card>
+@if (isLoading()) {
+  <mat-spinner class="spinner"></mat-spinner>
+}
